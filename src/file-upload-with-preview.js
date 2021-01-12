@@ -1,4 +1,5 @@
 import './file-upload-with-preview.scss'
+import Sortable from 'sortablejs'
 
 // Fixes matching issue in older ie versions
 import './polyfill'
@@ -18,6 +19,7 @@ export default class FileUploadWithPreview {
         this.options.text.browse = (this.options.text.hasOwnProperty('browse')) ? this.options.text.browse : 'Browse'
         this.options.text.selectedCount = (this.options.text.hasOwnProperty('selectedCount')) ? this.options.text.selectedCount : 'files selected'
         this.options.maxFileCount = (this.options.hasOwnProperty('maxFileCount')) ? this.options.maxFileCount : 0
+        this.options.sortable = (this.options.hasOwnProperty('sortable')) ? this.options.sortable : false
         this.cachedFileArray = []
         this.currentFileCount = 0
 
@@ -30,6 +32,14 @@ export default class FileUploadWithPreview {
         this.clearButton = this.el.querySelector('.custom-file-container__image-clear')
         this.inputLabel.innerHTML = this.options.text.chooseFile
         this.addBrowseButton(this.options.text.browse)
+
+        // Make files in image preview draggable
+        if (this.options.sortable) {
+            Sortable.create(this.imagePreview, {
+                animation: 150,
+                ghostClass: 'custom-file-preview-sortable',
+            })
+        }
 
         // Make sure all elements have been attached
         if (!this.el || !this.input || !this.inputLabel || !this.imagePreview || !this.clearButton) {
@@ -219,7 +229,7 @@ export default class FileUploadWithPreview {
                     if (this.options.showDeleteButtonOnImages) {
                         this.imagePreview.innerHTML += `
                             <div
-                                class="custom-file-container__image-multi-preview"
+                                class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 data-upload-token="${ file.token }"
                                 style="background-image: url('${ reader.result }'); "
                             >
@@ -229,22 +239,27 @@ export default class FileUploadWithPreview {
                                         data-upload-token="${ file.token }"
                                     >&times;</span>
                                 </span>
+                                ${ this.options.sortable ? `<span class="preview_filename">
+                                    ${ file.name }
+                                </span>` : '' }
                             </div>
                         `
                     } else {
                         this.imagePreview.innerHTML += `
                             <div
-                                class="custom-file-container__image-multi-preview"
+                                class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 data-upload-token="${ file.token }"
                                 style="background-image: url('${ reader.result }'); "
-                            ></div>
+                            >${ this.options.sortable ? `<span class="preview_filename">
+                                    ${ file.name }
+                                </span>` : '' }</div>
                         `
                     }
                 } else if (file.type.match('application/pdf')) { //PDF Upload
                     if (this.options.showDeleteButtonOnImages) {
                         this.imagePreview.innerHTML += `
                             <div
-                                class="custom-file-container__image-multi-preview"
+                                class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 data-upload-token="${ file.token }"
                                 style="background-image: url('${ this.successPdfImage }'); "
                             >
@@ -254,22 +269,27 @@ export default class FileUploadWithPreview {
                                         data-upload-token="${ file.token }"
                                     >&times;</span>
                                 </span>
+                                ${ this.options.sortable ? `<span class="preview_filename">
+                                    ${ file.name }
+                                </span>` : '' }
                             </div>
                         `
                     } else {
                         this.imagePreview.innerHTML += `
                             <div
-                                class="custom-file-container__image-multi-preview"
+                                class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 data-upload-token="${ file.token }"
                                 style="background-image: url('${ this.successPdfImage }'); "
-                            ></div>
+                            >${ this.options.sortable ? `<span class="preview_filename">
+                                    ${ file.name }
+                                </span>` : '' }</div>
                         `
                     }
                 } else if (file.type.match('video/*')) { //Video upload
                     if (this.options.showDeleteButtonOnImages) {
                         this.imagePreview.innerHTML += `
                             <div
-                                class="custom-file-container__image-multi-preview"
+                                class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 style="background-image: url('${ this.successVideoImage }'); "
                                 data-upload-token="${ file.token }"
                             >
@@ -284,17 +304,19 @@ export default class FileUploadWithPreview {
                     } else {
                         this.imagePreview.innerHTML += `
                             <div
-                                class="custom-file-container__image-multi-preview"
+                                class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 style="background-image: url('${ this.successVideoImage }'); "
                                 data-upload-token="${ file.token }"
-                            ></div>
+                            >${ this.options.sortable ? `<span class="preview_filename">
+                                    ${ file.name }
+                                </span>` : '' }</div>
                         `
                     }
                 } else { //Everything else
                     if (this.options.showDeleteButtonOnImages) {
                         this.imagePreview.innerHTML += `
                             <div
-                                class="custom-file-container__image-multi-preview"
+                                class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 style="background-image: url('${ this.successFileAltImage }'); "
                                 data-upload-token="${ file.token }"
                             >
@@ -304,15 +326,20 @@ export default class FileUploadWithPreview {
                                         data-upload-token="${ file.token }"
                                     >&times;</span>
                                 </span>
+                                ${ this.options.sortable ? `<span class="preview_filename">
+                                    ${ file.name }
+                                </span>` : '' }
                             </div>
                         `
                     } else {
                         this.imagePreview.innerHTML += `
                             <div
-                                class="custom-file-container__image-multi-preview"
+                                class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 style="background-image: url('${ this.successFileAltImage }'); "
                                 data-upload-token="${ file.token }"
-                            ></div>
+                            >${ this.options.sortable ? `<span class="preview_filename">
+                                    ${ file.name }
+                                </span>` : '' }</div>
                         `
                     }
                 }

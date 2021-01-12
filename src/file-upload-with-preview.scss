@@ -78,7 +78,7 @@ $black: #333;
         transition: all 0.2s ease;
         margin-top: 20px;
         margin-bottom: 40px;
-        height: 250px;
+        min-height: 250px;
         width: 100%;
         border-radius: 4px;
         background-size: cover;
@@ -125,4 +125,27 @@ $black: #333;
             }
         }
     }
+}
+
+.sortable-style{
+    cursor: move;
+    width: 97%;
+    background-size: 29.8% 100%;
+    background-position-x: left;
+    background-color: #fafafa;
+
+    &:active{
+        cursor: grabbing;
+    }
+}
+
+.preview_filename {
+    margin-left: 31%;
+    width: 60%;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    overflow: auto;
+    font-weight: 700;
+    word-break: break-word;
 }
