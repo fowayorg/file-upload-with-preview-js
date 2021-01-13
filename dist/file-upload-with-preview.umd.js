@@ -3901,7 +3901,7 @@
 	    }
 
 	    this.input = this.el.querySelector('input[type="file"]');
-	    this.positionStoreField = this.el.querySelector('input[name="IMAGE_POSITIONS"]');
+	    this.positionStoreField = this.el.querySelector('input[name="Input.ImageOrder"]');
 	    this.inputLabel = this.el.querySelector('.custom-file-container__custom-file__custom-file-control');
 	    this.imagePreview = this.el.querySelector('.custom-file-container__image-preview');
 	    this.clearButton = this.el.querySelector('.custom-file-container__image-clear');
