@@ -20,6 +20,7 @@ export default class FileUploadWithPreview {
         this.options.text.selectedCount = (this.options.text.hasOwnProperty('selectedCount')) ? this.options.text.selectedCount : 'files selected'
         this.options.maxFileCount = (this.options.hasOwnProperty('maxFileCount')) ? this.options.maxFileCount : 0
         this.options.sortable = (this.options.hasOwnProperty('sortable')) ? this.options.sortable : false
+        this.posArray = []
         this.cachedFileArray = []
         this.currentFileCount = 0
 
@@ -27,6 +28,7 @@ export default class FileUploadWithPreview {
         this.el = document.querySelector(`.custom-file-container[data-upload-id="${ this.uploadId }"]`)
         if (!this.el) { throw new Error(`Could not find a 'custom-file-container' with the id of: ${ this.uploadId }`) }
         this.input = this.el.querySelector('input[type="file"]')
+        this.positionStoreField = this.el.querySelector('input[name="IMAGE_POSITIONS"]')
         this.inputLabel = this.el.querySelector('.custom-file-container__custom-file__custom-file-control')
         this.imagePreview = this.el.querySelector('.custom-file-container__image-preview')
         this.clearButton = this.el.querySelector('.custom-file-container__image-clear')
@@ -43,6 +45,13 @@ export default class FileUploadWithPreview {
                     this.cachedFileArray = Array.from(this.imagePreview.children).map(
                         e => e.getAttribute('data-upload-token'),
                     ).map(t => this.cachedFileArray.find(f => f.token === t))
+
+                    this.positionStoreField.value = JSON.stringify(Array.from(this.imagePreview.children).map(
+                        e => ({
+                            location: e.getAttribute('data-location'),
+                            alreadyExists: e.getAttribute('data-already-exists'),
+                        }),
+                    ))
                 },
             })
         }
@@ -156,6 +165,17 @@ export default class FileUploadWithPreview {
             // each file a unique token
             file.token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
 
+            if (this.options.sortable && !(file instanceof File)) {
+                file.alreadyExists = true
+                file.location = this.posArray.find(t => t.name === file.name).location
+            } else if (this.options.sortable && (file instanceof File)) {
+                file.alreadyExists = false
+                file.location = file.name
+            } else {
+                file.alreadyExists = false
+                file.location = ''
+            }
+
             // File/files added.
             self.cachedFileArray.push(file)
 
@@ -237,6 +257,8 @@ export default class FileUploadWithPreview {
                             <div
                                 class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 data-upload-token="${ file.token }"
+                                data-location="${ file.location }"
+                                data-already-exists="${ file.alreadyExists }"
                                 style="background-image: url('${ reader.result }'); "
                             >
                                 <span class="custom-file-container__image-multi-preview__single-image-clear">
@@ -255,6 +277,8 @@ export default class FileUploadWithPreview {
                             <div
                                 class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 data-upload-token="${ file.token }"
+                                data-location="${ file.location }"
+                                data-already-exists="${ file.alreadyExists }"
                                 style="background-image: url('${ reader.result }'); "
                             >${ this.options.sortable ? `<span class="preview_filename">
                                     ${ file.name }
@@ -267,6 +291,8 @@ export default class FileUploadWithPreview {
                             <div
                                 class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 data-upload-token="${ file.token }"
+                                data-location="${ file.location }"
+                                data-already-exists="${ file.alreadyExists }"
                                 style="background-image: url('${ this.successPdfImage }'); "
                             >
                                 <span class="custom-file-container__image-multi-preview__single-image-clear">
@@ -285,6 +311,8 @@ export default class FileUploadWithPreview {
                             <div
                                 class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 data-upload-token="${ file.token }"
+                                data-location="${ file.location }"
+                                data-already-exists="${ file.alreadyExists }"
                                 style="background-image: url('${ this.successPdfImage }'); "
                             >${ this.options.sortable ? `<span class="preview_filename">
                                     ${ file.name }
@@ -298,6 +326,8 @@ export default class FileUploadWithPreview {
                                 class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 style="background-image: url('${ this.successVideoImage }'); "
                                 data-upload-token="${ file.token }"
+                                data-location="${ file.location }"
+                                data-already-exists="${ file.alreadyExists }"
                             >
                                 <span class="custom-file-container__image-multi-preview__single-image-clear">
                                     <span
@@ -313,6 +343,8 @@ export default class FileUploadWithPreview {
                                 class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 style="background-image: url('${ this.successVideoImage }'); "
                                 data-upload-token="${ file.token }"
+                                data-location="${ file.location }"
+                                data-already-exists="${ file.alreadyExists }"
                             >${ this.options.sortable ? `<span class="preview_filename">
                                     ${ file.name }
                                 </span>` : '' }</div>
@@ -325,6 +357,8 @@ export default class FileUploadWithPreview {
                                 class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 style="background-image: url('${ this.successFileAltImage }'); "
                                 data-upload-token="${ file.token }"
+                                data-location="${ file.location }"
+                                data-already-exists="${ file.alreadyExists }"
                             >
                                 <span class="custom-file-container__image-multi-preview__single-image-clear">
                                     <span
@@ -343,11 +377,21 @@ export default class FileUploadWithPreview {
                                 class="custom-file-container__image-multi-preview${ this.options.sortable ? ' sortable-style' : '' }"
                                 style="background-image: url('${ this.successFileAltImage }'); "
                                 data-upload-token="${ file.token }"
+                                data-location="${ file.location }"
+                                data-already-exists="${ file.alreadyExists }"
                             >${ this.options.sortable ? `<span class="preview_filename">
                                     ${ file.name }
                                 </span>` : '' }</div>
                         `
                     }
+                }
+                if (this.options.sortable) {
+                    this.positionStoreField.value = JSON.stringify(Array.from(this.imagePreview.children).map(
+                        e => ({
+                            location: e.getAttribute('data-location'),
+                            alreadyExists: e.getAttribute('data-already-exists'),
+                        }),
+                    ))
                 }
             }
         }
@@ -386,6 +430,10 @@ export default class FileUploadWithPreview {
                 presetFile.name = files[x].split('/').pop()
 
                 presetFiles.push(presetFile)
+
+                if (this.options.sortable) {
+                    this.posArray.push({ name: presetFile.name, location: files[x] })
+                }
             }
 
             this.addFiles(presetFiles)
