@@ -38,6 +38,12 @@ export default class FileUploadWithPreview {
             Sortable.create(this.imagePreview, {
                 animation: 150,
                 ghostClass: 'custom-file-preview-sortable',
+                onEnd: () => {
+                    // Change file order after resorting
+                    this.cachedFileArray = Array.from(this.imagePreview.children).map(
+                        e => e.getAttribute('data-upload-token'),
+                    ).map(t => this.cachedFileArray.find(f => f.token === t))
+                },
             })
         }
 

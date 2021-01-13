@@ -12,7 +12,7 @@ firstUploadInfoButton.addEventListener('click', function () {
 })
 
 // Second upload
-window.secondUpload = new FileUploadWithPreview('mySecondImage', {
+const secondUpload = new FileUploadWithPreview('mySecondImage', {
     showDeleteButtonOnImages: true,
     text: {
         chooseFile: 'Custom Placeholder Copy',
@@ -31,7 +31,7 @@ window.secondUpload = new FileUploadWithPreview('mySecondImage', {
 })
 const secondUploadInfoButton = document.querySelector('.upload-info-button--second')
 secondUploadInfoButton.addEventListener('click', function () {
-    console.log('Second upload:', window.secondUpload, window.secondUpload.cachedFileArray)
+    console.log('Second upload:', secondUpload, secondUpload.cachedFileArray)
 })
 
 window.addEventListener('fileUploadWithPreview:imagesAdded', function (e) {
