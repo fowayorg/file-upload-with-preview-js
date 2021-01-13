@@ -1,3 +1,4 @@
+> :warning: **This fork is for personal use**: <a href="https://github.com/promosis/file-upload-with-preview#readme">use the original repository</a>
 <p align="center"><a href="" target="_blank"><img src="public/file-upload-with-preview-animated.gif"></a></p>
 
 # file-upload-with-preview
